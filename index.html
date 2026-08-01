@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Science Class Check-in</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen py-10 px-4 font-sans">
+
+  <div class="max-w-3xl mx-auto space-y-10">
+    
+    <!-- Header -->
+    <header class="text-center space-y-2">
+      <h1 class="text-4xl font-extrabold text-cyan-400">🔬 Science Class Check-in</h1>
+      <p class="text-slate-400">Share your thoughts for the school year!</p>
+    </header>
+
+    <!-- Student Form -->
+    <main class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xl">
+      <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+        
+        <div>
+          <label class="block text-sm font-semibold text-slate-300 mb-2">Your Name (or Nickname)</label>
+          <input type="text" id="studentName" required 
+            class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            placeholder="e.g. Alex M.">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-cyan-300 mb-2">1. What one goal do you have for yourself this year?</label>
+          <textarea id="goal" rows="3" required 
+            class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            placeholder="My main goal is..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-cyan-300 mb-2">2. What are you worried about as you begin this school year?</label>
+          <textarea id="worry" rows="3" required 
+            class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            placeholder="I'm a bit worried about..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-cyan-300 mb-2">3. What can your science teachers do to help you enjoy learning?</label>
+          <textarea id="teacherTip" rows="3" required 
+            class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            placeholder="It really helps me when teachers..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn" 
+          class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition duration-200 shadow-lg shadow-cyan-500/20">
+          Submit Answers
+        </button>
+      </form>
+      
+      <div id="statusMessage" class="hidden mt-4 text-center font-medium"></div>
+    </main>
+
+    <!-- Class Spotlight Section -->
+    <section class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-emerald-400">🌟 Class Spotlight</h2>
+          <p class="text-xs text-slate-400">One random student response featured per question!</p>
+        </div>
+        <button onclick="loadSpotlight()" 
+          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition">
+          🔄 Shuffle Answers
+        </button>
+      </div>
+
+      <div id="spotlightContainer" class="space-y-4">
+        <p class="text-slate-500 text-center italic">Submit answers above and click shuffle to see classmate insights!</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Your exact Google Web App Link
+    const API_URL = "https://script.google.com/macros/s/AKfycbztNuhGhOYB-9xb34sz3tT2kgZGj53bP3-ZT8bfCZzABfJAxJq9Bi4y3Lm4LlpDsIJT/exec";
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      const statusMsg = document.getElementById('statusMessage');
+      
+      btn.disabled = true;
+      btn.innerText = "Submitting...";
+
+      const payload = {
+        studentName: document.getElementById('studentName').value,
+        goal: document.getElementById('goal').value,
+        worry: document.getElementById('worry').value,
+        teacherTip: document.getElementById('teacherTip').value
+      };
+
+      // Uses text/plain to bypass CORS preflight restrictions in browsers
+      fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        btn.disabled = false;
+        btn.innerText = "Submit Answers";
+        document.getElementById('checkinForm').reset();
+        
+        statusMsg.className = "mt-4 text-center text-emerald-400 font-semibold";
+        statusMsg.innerText = "✨ Response submitted successfully!";
+        statusMsg.classList.remove('hidden');
+
+        // Automatically reload featured responses after 1.5s
+        setTimeout(loadSpotlight, 1500);
+      })
+      .catch(err => {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerText = "Submit Answers";
+        statusMsg.className = "mt-4 text-center text-rose-400 font-semibold";
+        statusMsg.innerText = "❌ Error submitting response. Try again.";
+        statusMsg.classList.remove('hidden');
+      });
+    }
+
+    function loadSpotlight() {
+      const container = document.getElementById('spotlightContainer');
+      
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+          if (!data) {
+            container.innerHTML = '<p class="text-slate-500 text-center">No submissions yet to spotlight!</p>';
+            return;
+          }
+
+          container.innerHTML = `
+            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Yearly Goal</span>
+              <p class="mt-1 text-slate-200 font-medium">"${data.goal.text}"</p>
+              <span class="text-xs text-slate-400 block mt-2">— ${data.goal.name}</span>
+            </div>
+
+            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">School Year Worry</span>
+              <p class="mt-1 text-slate-200 font-medium">"${data.worry.text}"</p>
+              <span class="text-xs text-slate-400 block mt-2">— ${data.worry.name}</span>
+            </div>
+
+            <div class="p-4 bg-slate-900 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Science Teacher Tip</span>
+              <p class="mt-1 text-slate-200 font-medium">"${data.tip.text}"</p>
+              <span class="text-xs text-slate-400 block mt-2">— ${data.tip.name}</span>
+            </div>
+          `;
+        })
+        .catch(err => {
+          console.error("Error fetching spotlight data:", err);
+        });
+    }
+
+    window.onload = loadSpotlight;
+  </script>
+</body>
+</html>
