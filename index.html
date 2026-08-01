@@ -64,6 +64,40 @@
       box-shadow: 
         inset -3px -3px 0px #32302e,
         inset 3px 3px 0px #0a0909;
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Slot Specific Dynamic Color Glows on Focus */
+    .slot-gamertag:focus-within {
+      box-shadow: 
+        inset -3px -3px 0px #121111,
+        inset 3px 3px 0px #0a0909,
+        0 0 15px rgba(250, 204, 21, 0.6);
+      border-color: #facc15;
+    }
+
+    .slot-quest:focus-within {
+      box-shadow: 
+        inset -3px -3px 0px #121111,
+        inset 3px 3px 0px #0a0909,
+        0 0 15px rgba(16, 185, 129, 0.6);
+      border-color: #10b981;
+    }
+
+    .slot-hazard:focus-within {
+      box-shadow: 
+        inset -3px -3px 0px #121111,
+        inset 3px 3px 0px #0a0909,
+        0 0 15px rgba(239, 68, 68, 0.6);
+      border-color: #ef4444;
+    }
+
+    .slot-buff:focus-within {
+      box-shadow: 
+        inset -3px -3px 0px #121111,
+        inset 3px 3px 0px #0a0909,
+        0 0 15px rgba(56, 189, 248, 0.6);
+      border-color: #38bdf8;
     }
 
     /* Action Buttons */
@@ -76,6 +110,8 @@
         0 4px 0px #000;
       text-shadow: 2px 2px 0px #000;
       transition: all 0.1s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .mc-button:hover {
@@ -111,21 +147,43 @@
         0 6px 0px #000;
     }
 
+    /* Perimeter Running Laser Light Animation */
+    .perimeter-runner {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: none;
+    }
+
+    .submitting .perimeter-runner {
+      display: block;
+    }
+
+    .perimeter-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #fde047;
+      box-shadow: 0 0 12px #fde047, 0 0 20px #f59e0b;
+      offset-path: rect(0% 100% 100% 0% round 0px);
+      animation: runPerimeter 1.2s linear infinite;
+    }
+
+    @keyframes runPerimeter {
+      0% { offset-distance: 0%; }
+      100% { offset-distance: 100%; }
+    }
+
     /* Text & Input Enhancements */
     input, textarea {
       font-family: 'Pixelify Sans', sans-serif !important;
       font-size: 1.25rem !important;
       color: #f8fafc !important;
       text-shadow: 1px 1px 0px #000;
-      transition: all 0.2s ease;
     }
 
     input:focus, textarea:focus {
-      box-shadow: 
-        inset -3px -3px 0px #1e293b,
-        inset 3px 3px 0px #0f172a,
-        0 0 12px rgba(16, 185, 129, 0.4);
-      border-color: #10b981 !important;
+      outline: none;
     }
 
     .pixel-text-shadow {
@@ -162,14 +220,6 @@
       display: inline-block;
       animation: fastSpin 1s linear infinite;
     }
-
-    @keyframes redstonePulse {
-      0%, 100% { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-      50% { border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.7); }
-    }
-    .glowing-border-active {
-      animation: redstonePulse 0.6s infinite ease-in-out;
-    }
   </style>
 </head>
 <body class="py-6 sm:py-10 px-3 sm:px-6">
@@ -202,9 +252,10 @@
           <label class="block text-[11px] sm:text-xs text-yellow-400 leading-relaxed glow-gold">
             🏷️ GAMERTAG / NAME:
           </label>
-          <div class="mc-slot p-1">
+          <div class="mc-slot slot-gamertag p-1">
             <input type="text" id="studentName" required 
-              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-emerald-400 focus:outline-none"
+              onfocus="playClickSound()"
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-yellow-300"
               placeholder="e.g., Steve_99 or Alex">
           </div>
         </div>
@@ -214,9 +265,10 @@
           <label class="block text-[11px] sm:text-xs text-emerald-400 leading-relaxed pixel-text-shadow">
             💎 1. MAIN QUEST: WHAT IS ONE BIG GOAL YOU WANT TO ACHIEVE THIS YEAR?
           </label>
-          <div class="mc-slot p-1">
+          <div class="mc-slot slot-quest p-1">
             <textarea id="goal" rows="3" required 
-              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              onfocus="playClickSound()"
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-emerald-300"
               placeholder="My main quest is to..."></textarea>
           </div>
         </div>
@@ -226,9 +278,10 @@
           <label class="block text-[11px] sm:text-xs text-red-400 leading-relaxed pixel-text-shadow">
             💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?
           </label>
-          <div class="mc-slot p-1">
+          <div class="mc-slot slot-hazard p-1">
             <textarea id="worry" rows="3" required 
-              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              onfocus="playClickSound()"
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-red-300"
               placeholder="I'm worried about..."></textarea>
           </div>
         </div>
@@ -238,18 +291,22 @@
           <label class="block text-[11px] sm:text-xs text-sky-400 leading-relaxed pixel-text-shadow">
             🧪 3. TEACHER BUFFS: WHAT CAN TEACHERS DO TO HELP YOU CRAFT SUCCESS?
           </label>
-          <div class="mc-slot p-1">
+          <div class="mc-slot slot-buff p-1">
             <textarea id="teacherTip" rows="3" required 
-              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              onfocus="playClickSound()"
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-sky-300"
               placeholder="Teachers can help by..."></textarea>
           </div>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit Button with Traveling Perimeter Beam -->
         <div class="pt-2">
-          <button type="submit" id="submitBtn" 
+          <button type="submit" id="submitBtn" onclick="playClickSound()"
             class="w-full py-4 text-white font-bold text-[11px] sm:text-xs mc-button cursor-pointer leading-normal tracking-wider">
-            [ CRAFT & SUBMIT REFLECTION ]
+            <span>[ CRAFT & SUBMIT REFLECTION ]</span>
+            <div class="perimeter-runner">
+              <div class="perimeter-dot"></div>
+            </div>
           </button>
         </div>
       </form>
@@ -265,7 +322,7 @@
           <h2 class="text-xs sm:text-base font-bold text-yellow-400 glow-gold">📜 REALM BULLETIN</h2>
           <p class="text-stone-300 text-sm sm:text-base mt-1 font-semibold">Insights shared by fellow players!</p>
         </div>
-        <button id="shuffleBtn" onclick="loadSpotlight()" 
+        <button id="shuffleBtn" onclick="playClickSound(); loadSpotlight();" 
           class="w-full sm:w-auto px-5 py-2.5 text-[10px] sm:text-xs text-yellow-300 mc-button mc-button-secondary mc-font">
           🔄 RESHUFFLE
         </button>
@@ -281,6 +338,64 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbztNuhGhOYB-9xb34sz3tT2kgZGj53bP3-ZT8bfCZzABfJAxJq9Bi4y3Lm4LlpDsIJT/exec";
     let statusTimeout;
+
+    // --- Web Audio Synthesizer (Retro Sound Generator) ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+    }
+
+    // Short 8-Bit Click Sound
+    function playClickSound() {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
+      
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    // 8-Bit Level-Up Fanfare Chime Sound
+    function playLevelUpSound() {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C-E-G-C-E-G
+      notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.07));
+        
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + (i * 0.07));
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (i * 0.07) + 0.15);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(audioCtx.currentTime + (i * 0.07));
+        osc.stop(audioCtx.currentTime + (i * 0.07) + 0.15);
+      });
+    }
 
     // Palette for Title Dynamic Animation
     const pixelColors = [
@@ -365,8 +480,8 @@
       clearTimeout(statusTimeout);
 
       btn.disabled = true;
-      btn.innerText = "[ CRAFTING RESPONSE... ]";
-      btn.classList.add('glowing-border-active');
+      btn.querySelector('span').innerText = "[ CRAFTING RESPONSE... ]";
+      btn.classList.add('submitting');
 
       const payload = {
         studentName: document.getElementById('studentName').value,
@@ -382,9 +497,9 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        btn.classList.remove('glowing-border-active');
+        btn.classList.remove('submitting');
         btn.disabled = false;
-        btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
+        btn.querySelector('span').innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         document.getElementById('checkinForm').reset();
         
         statusMsg.className = "mt-6 text-center text-xs text-emerald-400 mc-font leading-relaxed opacity-100 glow-gold";
@@ -392,6 +507,7 @@
         statusMsg.classList.remove('hidden');
 
         fireConfetti();
+        playLevelUpSound();
         setTimeout(loadSpotlight, 1200);
 
         statusTimeout = setTimeout(() => {
@@ -401,9 +517,9 @@
       })
       .catch(err => {
         console.error(err);
-        btn.classList.remove('glowing-border-active');
+        btn.classList.remove('submitting');
         btn.disabled = false;
-        btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
+        btn.querySelector('span').innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         statusMsg.className = "mt-6 text-center text-xs text-red-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "❌ CRAFTING FAILED! TRY AGAIN!";
         statusMsg.classList.remove('hidden');
