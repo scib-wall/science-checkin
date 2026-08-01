@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minecraft Class Reflections</title>
+  <title>Class Reflections & Realm Quests</title>
   
-  <!-- Minecraft Retro Pixel Font -->
+  <!-- Retro Pixel Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -53,17 +53,46 @@
       animation: redstoneGlow 1.5s linear infinite;
       padding: 4px;
     }
+
+    /* Floating Header Icon Animation */
+    @keyframes pixelFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .float-icon {
+      display: inline-block;
+      animation: pixelFloat 2s ease-in-out infinite;
+    }
+
+    /* Pulse Glow Header Text Animation */
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 2px 2px 0px #000, 0 0 8px rgba(253, 224, 71, 0.3); }
+      50% { text-shadow: 2px 2px 0px #000, 0 0 18px rgba(253, 224, 71, 0.8); }
+    }
+    .animated-title {
+      animation: titleGlow 2.5s ease-in-out infinite;
+    }
+
+    /* Shuffle Loading Spinner */
+    @keyframes pixelSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .pixel-spinner {
+      display: inline-block;
+      animation: pixelSpin 1s steps(8) infinite;
+    }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen py-8 px-4">
 
   <div class="max-w-2xl mx-auto space-y-8">
     
-    <!-- Minecraft Header Banner -->
+    <!-- Animated Header Banner -->
     <header class="text-center space-y-3">
       <div class="inline-block bg-emerald-700 mc-box border-b-8 border-emerald-900 p-4 rounded-none w-full">
-        <h1 class="text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow-[2px_2px_0_#000]">
-          ⛏️ MINECRAFT CLASS REFLECTIONS 💎
+        <h1 class="text-xl sm:text-2xl font-bold text-yellow-300 animated-title">
+          <span class="float-icon">⛏️</span> CLASS REFLECTIONS <span class="float-icon" style="animation-delay: 0.5s;">💎</span>
         </h1>
         <p class="text-emerald-100 text-lg mt-2 font-mono">Build your quest goals & craft your school year!</p>
       </div>
@@ -91,7 +120,7 @@
 
         <!-- Worry / Hazard -->
         <div>
-          <label class="block text-xs text-red-400 mb-2 leading-relaxed">💥 2. CREEPER WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?</label>
+          <label class="block text-xs text-red-400 mb-2 leading-relaxed">💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?</label>
           <textarea id="worry" rows="3" required 
             class="w-full px-4 py-2 bg-stone-900 border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-red-500 font-mono text-xl"
             placeholder="I'm worried about..."></textarea>
@@ -114,8 +143,8 @@
         </div>
       </form>
       
-      <!-- Status Message -->
-      <div id="statusMessage" class="hidden mt-6 text-center text-sm mc-font"></div>
+      <!-- Auto-fading Status Message -->
+      <div id="statusMessage" class="hidden mt-6 text-center text-sm mc-font transition-opacity duration-500"></div>
     </main>
 
     <!-- Community Billboard / Spotlight -->
@@ -125,8 +154,8 @@
           <h2 class="text-sm sm:text-base font-bold text-yellow-400">📜 REALM BULLETIN</h2>
           <p class="text-slate-400 text-sm">Insights shared by fellow players!</p>
         </div>
-        <button onclick="loadSpotlight()" 
-          class="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-xs text-yellow-300 border-2 border-black mc-button mc-font">
+        <button id="shuffleBtn" onclick="loadSpotlight()" 
+          class="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-xs text-yellow-300 border-2 border-black mc-button mc-font transition">
           🔄 RESHUFFLE
         </button>
       </div>
@@ -140,6 +169,7 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbztNuhGhOYB-9xb34sz3tT2kgZGj53bP3-ZT8bfCZzABfJAxJq9Bi4y3Lm4LlpDsIJT/exec";
+    let statusTimeout;
 
     function handleFormSubmit(event) {
       event.preventDefault();
@@ -148,6 +178,9 @@
       const btnWrapper = document.getElementById('btnWrapper');
       const statusMsg = document.getElementById('statusMessage');
       
+      // Clear previous timer if submitting quickly again
+      clearTimeout(statusTimeout);
+
       // Activate Redstone Running Glow Effect
       btn.disabled = true;
       btn.innerText = "[ CRAFTING RESPONSE... ]";
@@ -175,7 +208,7 @@
         document.getElementById('checkinForm').reset();
         
         // Show Success Banner
-        statusMsg.className = "mt-6 text-center text-xs text-emerald-400 mc-font leading-relaxed";
+        statusMsg.className = "mt-6 text-center text-xs text-emerald-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "🎉 ADVANCEMENT MADE! REFLECTION CRAFTED!";
         statusMsg.classList.remove('hidden');
 
@@ -183,21 +216,32 @@
         fireConfetti();
 
         // Refresh Realm Bulletin
-        setTimeout(loadSpotlight, 1500);
+        setTimeout(loadSpotlight, 1200);
+
+        // Auto-hide success message after 5 seconds (5000ms)
+        statusTimeout = setTimeout(() => {
+          statusMsg.classList.add('opacity-0');
+          setTimeout(() => statusMsg.classList.add('hidden'), 500); // Hide completely after fade-out
+        }, 5000);
       })
       .catch(err => {
         console.error(err);
         btnWrapper.classList.remove('glowing-border-active');
         btn.disabled = false;
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
-        statusMsg.className = "mt-6 text-center text-xs text-red-400 mc-font leading-relaxed";
+        statusMsg.className = "mt-6 text-center text-xs text-red-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "❌ CRAFTING FAILED! TRY AGAIN!";
         statusMsg.classList.remove('hidden');
+
+        // Auto-hide error message after 5 seconds
+        statusTimeout = setTimeout(() => {
+          statusMsg.classList.add('opacity-0');
+          setTimeout(() => statusMsg.classList.add('hidden'), 500);
+        }, 5000);
       });
     }
 
     function fireConfetti() {
-      // Minecraft Blocky/Square shaped confetti
       confetti({
         particleCount: 90,
         spread: 80,
@@ -209,10 +253,25 @@
 
     function loadSpotlight() {
       const container = document.getElementById('spotlightContainer');
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      
+      // Add Shuffling Animation in Container & Disable Button
+      shuffleBtn.disabled = true;
+      shuffleBtn.innerText = "⏳ SHUFFLING...";
+      
+      container.innerHTML = `
+        <div class="py-8 text-center space-y-3">
+          <div class="text-3xl pixel-spinner">⚙️</div>
+          <p class="text-xs text-yellow-300 mc-font">SHUFFLING THOUGHTS...</p>
+        </div>
+      `;
       
       fetch(API_URL)
         .then(res => res.json())
         .then(data => {
+          shuffleBtn.disabled = false;
+          shuffleBtn.innerText = "🔄 RESHUFFLE";
+
           if (!data) {
             container.innerHTML = '<p class="text-slate-400 text-center">No player notes found yet!</p>';
             return;
@@ -226,7 +285,7 @@
             </div>
 
             <div class="p-4 bg-stone-900 border-2 border-stone-700 space-y-1">
-              <span class="text-xs text-red-400 mc-font">💥 CREEPER HAZARD:</span>
+              <span class="text-xs text-red-400 mc-font">💥 HAZARD WARNING:</span>
               <p class="text-slate-200 text-xl font-mono">"${data.worry.text}"</p>
               <span class="text-xs text-stone-500 block text-right">— Player: ${data.worry.name}</span>
             </div>
@@ -239,7 +298,10 @@
           `;
         })
         .catch(err => {
+          shuffleBtn.disabled = false;
+          shuffleBtn.innerText = "🔄 RESHUFFLE";
           console.error("Error fetching spotlight data:", err);
+          container.innerHTML = '<p class="text-red-400 text-center text-xs mc-font">FAILED TO LOAD REFLECTIONS</p>';
         });
     }
 
