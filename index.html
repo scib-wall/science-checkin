@@ -80,11 +80,12 @@
       will-change: transform;
     }
 
-    /* Dynamic Letter Span Styling */
+    /* Dynamic Letter Span Styling with Smooth Color Transitions */
     .colored-letter {
       display: inline-block;
       text-shadow: 2px 2px 0px #000;
-      transition: color 0.3s ease;
+      transition: color 0.25s linear;
+      will-change: color;
     }
   </style>
 </head>
@@ -183,8 +184,8 @@
       '#fb923c', '#a855f7', '#f472b6', '#34d399'
     ];
 
-    // Applies Random Color to Each Letter
-    function randomizeTitleColors() {
+    // Initial setup: convert text into individual span tags
+    function initializeTitleSpans() {
       const titleEl = document.getElementById('randomTitle');
       const text = titleEl.innerText;
       titleEl.innerHTML = '';
@@ -197,11 +198,21 @@
           const span = document.createElement('span');
           span.className = 'colored-letter';
           span.innerText = char;
-          const randomColor = pixelColors[Math.floor(Math.random() * pixelColors.length)];
-          span.style.color = randomColor;
+          span.style.color = pixelColors[Math.floor(Math.random() * pixelColors.length)];
           titleEl.appendChild(span);
         }
       }
+    }
+
+    // Updates letter colors every 0.5s smoothly
+    function startTitleColorLoop() {
+      setInterval(() => {
+        const spans = document.querySelectorAll('#randomTitle .colored-letter');
+        spans.forEach(span => {
+          const randomColor = pixelColors[Math.floor(Math.random() * pixelColors.length)];
+          span.style.color = randomColor;
+        });
+      }, 500); // 500ms = 0.5 seconds
     }
 
     function handleFormSubmit(event) {
@@ -330,7 +341,8 @@
     }
 
     window.onload = function() {
-      randomizeTitleColors();
+      initializeTitleSpans();
+      startTitleColorLoop();
       loadSpotlight();
     };
   </script>
