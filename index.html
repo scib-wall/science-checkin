@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Class Reflections & Realm Quests</title>
   
   <!-- Retro Pixel Fonts -->
@@ -19,18 +19,26 @@
   <style>
     body {
       font-family: 'VT323', monospace;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       background-color: #1a1a1a;
       background-image: radial-gradient(#2d3748 1px, transparent 0);
       background-size: 16px 16px;
+      overflow-x: hidden; /* Prevents horizontal scrolling on small screens */
     }
+    
+    @media (min-width: 640px) {
+      body {
+        font-size: 1.35rem;
+      }
+    }
+
     h1, h2, label, button, .mc-font {
       font-family: 'Press Start 2P', cursive;
     }
 
     /* Pixelated Sharp Borders */
     .mc-button {
-      box-shadow: inset -4px -4px 0px 0px #1e293b, inset 4px 4px 0px 0px #94a3b8;
+      box-shadow: inset -3px -3px 0px 0px #1e293b, inset 3px 3px 0px 0px #94a3b8;
       image-rendering: pixelated;
     }
 
@@ -57,7 +65,7 @@
     /* Floating Header Icon Animation */
     @keyframes pixelFloat {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
+      50% { transform: translateY(-4px); }
     }
     .float-icon {
       display: inline-block;
@@ -84,83 +92,83 @@
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen py-8 px-4">
+<body class="text-slate-100 min-h-screen py-4 sm:py-8 px-3 sm:px-6">
 
-  <div class="max-w-2xl mx-auto space-y-8">
+  <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
     
     <!-- Animated Header Banner -->
     <header class="text-center space-y-3">
-      <div class="inline-block bg-emerald-700 mc-box border-b-8 border-emerald-900 p-4 rounded-none w-full">
-        <h1 class="text-xl sm:text-2xl font-bold text-yellow-300 animated-title">
+      <div class="inline-block bg-emerald-700 mc-box border-b-6 sm:border-b-8 border-emerald-900 p-3 sm:p-4 rounded-none w-full">
+        <h1 class="text-sm sm:text-xl font-bold text-yellow-300 animated-title leading-relaxed">
           <span class="float-icon">⛏️</span> CLASS REFLECTIONS <span class="float-icon" style="animation-delay: 0.5s;">💎</span>
         </h1>
-        <p class="text-emerald-100 text-lg mt-2 font-mono">Build your quest goals & craft your school year!</p>
+        <p class="text-emerald-100 text-base sm:text-lg mt-1 sm:mt-2 font-mono">Build your quest goals & craft your school year!</p>
       </div>
     </header>
 
     <!-- Main Reflection Form -->
-    <main class="bg-stone-800 mc-box p-6 sm:p-8 shadow-2xl">
-      <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+    <main class="bg-stone-800 mc-box p-4 sm:p-8 shadow-2xl">
+      <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-5 sm:space-y-6">
         
         <!-- Gamertag / Name -->
         <div>
-          <label class="block text-xs text-yellow-400 mb-2 leading-relaxed">🏷️ GAMERTAG / NAME:</label>
+          <label class="block text-[10px] sm:text-xs text-yellow-400 mb-2 leading-relaxed">🏷️ GAMERTAG / NAME:</label>
           <input type="text" id="studentName" required 
-            class="w-full px-4 py-2 bg-stone-900 border-4 border-stone-600 text-green-400 focus:outline-none focus:border-emerald-500 font-mono text-xl"
+            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-green-400 focus:outline-none focus:border-emerald-500 font-mono text-lg sm:text-xl"
             placeholder="Steve_99 or Alex">
         </div>
 
         <!-- Quest Goal -->
         <div>
-          <label class="block text-xs text-emerald-400 mb-2 leading-relaxed">💎 1. MAIN QUEST: WHAT IS ONE BIG GOAL YOU WANT TO ACHIEVE THIS YEAR?</label>
+          <label class="block text-[10px] sm:text-xs text-emerald-400 mb-2 leading-relaxed">💎 1. MAIN QUEST: WHAT IS ONE BIG GOAL YOU WANT TO ACHIEVE THIS YEAR?</label>
           <textarea id="goal" rows="3" required 
-            class="w-full px-4 py-2 bg-stone-900 border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-emerald-500 font-mono text-xl"
+            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-emerald-500 font-mono text-lg sm:text-xl"
             placeholder="My main quest is to..."></textarea>
         </div>
 
         <!-- Worry / Hazard -->
         <div>
-          <label class="block text-xs text-red-400 mb-2 leading-relaxed">💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?</label>
+          <label class="block text-[10px] sm:text-xs text-red-400 mb-2 leading-relaxed">💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?</label>
           <textarea id="worry" rows="3" required 
-            class="w-full px-4 py-2 bg-stone-900 border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-red-500 font-mono text-xl"
+            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-red-500 font-mono text-lg sm:text-xl"
             placeholder="I'm worried about..."></textarea>
         </div>
 
         <!-- Teacher Advice / Buff -->
         <div>
-          <label class="block text-xs text-sky-400 mb-2 leading-relaxed">🧪 3. TEACHER BUFFS: WHAT CAN TEACHERS DO TO HELP YOU CRAFT SUCCESS?</label>
+          <label class="block text-[10px] sm:text-xs text-sky-400 mb-2 leading-relaxed">🧪 3. TEACHER BUFFS: WHAT CAN TEACHERS DO TO HELP YOU CRAFT SUCCESS?</label>
           <textarea id="teacherTip" rows="3" required 
-            class="w-full px-4 py-2 bg-stone-900 border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-sky-500 font-mono text-xl"
+            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-sky-500 font-mono text-lg sm:text-xl"
             placeholder="Teachers can help by..."></textarea>
         </div>
 
         <!-- Submit Button Container -->
         <div id="btnWrapper" class="transition-all duration-200">
           <button type="submit" id="submitBtn" 
-            class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs sm:text-sm border-4 border-black mc-button cursor-pointer transition">
+            class="w-full py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-[10px] sm:text-xs border-2 sm:border-4 border-black mc-button cursor-pointer transition leading-normal">
             [ CRAFT & SUBMIT REFLECTION ]
           </button>
         </div>
       </form>
       
       <!-- Auto-fading Status Message -->
-      <div id="statusMessage" class="hidden mt-6 text-center text-sm mc-font transition-opacity duration-500"></div>
+      <div id="statusMessage" class="hidden mt-4 sm:mt-6 text-center text-[10px] sm:text-xs mc-font transition-opacity duration-500"></div>
     </main>
 
     <!-- Community Billboard / Spotlight -->
-    <section class="bg-stone-800 mc-box p-6 sm:p-8 space-y-6">
-      <div class="flex flex-col sm:flex-row items-center justify-between border-b-4 border-stone-700 pb-4 gap-4">
-        <div>
-          <h2 class="text-sm sm:text-base font-bold text-yellow-400">📜 REALM BULLETIN</h2>
-          <p class="text-slate-400 text-sm">Insights shared by fellow players!</p>
+    <section class="bg-stone-800 mc-box p-4 sm:p-8 space-y-4 sm:space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between border-b-2 sm:border-b-4 border-stone-700 pb-3 sm:pb-4 gap-3">
+        <div class="text-center sm:text-left">
+          <h2 class="text-xs sm:text-base font-bold text-yellow-400">📜 REALM BULLETIN</h2>
+          <p class="text-slate-400 text-xs sm:text-sm">Insights shared by fellow players!</p>
         </div>
         <button id="shuffleBtn" onclick="loadSpotlight()" 
-          class="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-xs text-yellow-300 border-2 border-black mc-button mc-font transition">
+          class="w-full sm:w-auto px-4 py-2 bg-stone-700 hover:bg-stone-600 text-[10px] sm:text-xs text-yellow-300 border-2 border-black mc-button mc-font transition">
           🔄 RESHUFFLE
         </button>
       </div>
 
-      <div id="spotlightContainer" class="space-y-4">
+      <div id="spotlightContainer" class="space-y-3 sm:space-y-4">
         <p class="text-slate-400 text-center italic">Craft your entry above to display on the board!</p>
       </div>
     </section>
@@ -178,10 +186,8 @@
       const btnWrapper = document.getElementById('btnWrapper');
       const statusMsg = document.getElementById('statusMessage');
       
-      // Clear previous timer if submitting quickly again
       clearTimeout(statusTimeout);
 
-      // Activate Redstone Running Glow Effect
       btn.disabled = true;
       btn.innerText = "[ CRAFTING RESPONSE... ]";
       btnWrapper.classList.add('glowing-border-active');
@@ -207,21 +213,17 @@
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         document.getElementById('checkinForm').reset();
         
-        // Show Success Banner
-        statusMsg.className = "mt-6 text-center text-xs text-emerald-400 mc-font leading-relaxed opacity-100";
+        statusMsg.className = "mt-4 sm:mt-6 text-center text-[10px] sm:text-xs text-emerald-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "🎉 ADVANCEMENT MADE! REFLECTION CRAFTED!";
         statusMsg.classList.remove('hidden');
 
-        // Confetti Explosion
         fireConfetti();
 
-        // Refresh Realm Bulletin
         setTimeout(loadSpotlight, 1200);
 
-        // Auto-hide success message after 5 seconds (5000ms)
         statusTimeout = setTimeout(() => {
           statusMsg.classList.add('opacity-0');
-          setTimeout(() => statusMsg.classList.add('hidden'), 500); // Hide completely after fade-out
+          setTimeout(() => statusMsg.classList.add('hidden'), 500);
         }, 5000);
       })
       .catch(err => {
@@ -229,11 +231,10 @@
         btnWrapper.classList.remove('glowing-border-active');
         btn.disabled = false;
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
-        statusMsg.className = "mt-6 text-center text-xs text-red-400 mc-font leading-relaxed opacity-100";
+        statusMsg.className = "mt-4 sm:mt-6 text-center text-[10px] sm:text-xs text-red-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "❌ CRAFTING FAILED! TRY AGAIN!";
         statusMsg.classList.remove('hidden');
 
-        // Auto-hide error message after 5 seconds
         statusTimeout = setTimeout(() => {
           statusMsg.classList.add('opacity-0');
           setTimeout(() => statusMsg.classList.add('hidden'), 500);
@@ -243,8 +244,8 @@
 
     function fireConfetti() {
       confetti({
-        particleCount: 90,
-        spread: 80,
+        particleCount: 70,
+        spread: 70,
         shapes: ['square'],
         colors: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'],
         origin: { y: 0.6 }
@@ -255,14 +256,13 @@
       const container = document.getElementById('spotlightContainer');
       const shuffleBtn = document.getElementById('shuffleBtn');
       
-      // Add Shuffling Animation in Container & Disable Button
       shuffleBtn.disabled = true;
       shuffleBtn.innerText = "⏳ SHUFFLING...";
       
       container.innerHTML = `
-        <div class="py-8 text-center space-y-3">
-          <div class="text-3xl pixel-spinner">⚙️</div>
-          <p class="text-xs text-yellow-300 mc-font">SHUFFLING THOUGHTS...</p>
+        <div class="py-6 text-center space-y-2">
+          <div class="text-2xl sm:text-3xl pixel-spinner">⚙️</div>
+          <p class="text-[10px] sm:text-xs text-yellow-300 mc-font">SHUFFLING THOUGHTS...</p>
         </div>
       `;
       
@@ -278,21 +278,21 @@
           }
 
           container.innerHTML = `
-            <div class="p-4 bg-stone-900 border-2 border-stone-700 space-y-1">
-              <span class="text-xs text-emerald-400 mc-font">💎 MAIN QUEST:</span>
-              <p class="text-slate-200 text-xl font-mono">"${data.goal.text}"</p>
+            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
+              <span class="text-[10px] sm:text-xs text-emerald-400 mc-font">💎 MAIN QUEST:</span>
+              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.goal.text}"</p>
               <span class="text-xs text-stone-500 block text-right">— Player: ${data.goal.name}</span>
             </div>
 
-            <div class="p-4 bg-stone-900 border-2 border-stone-700 space-y-1">
-              <span class="text-xs text-red-400 mc-font">💥 HAZARD WARNING:</span>
-              <p class="text-slate-200 text-xl font-mono">"${data.worry.text}"</p>
+            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
+              <span class="text-[10px] sm:text-xs text-red-400 mc-font">💥 HAZARD WARNING:</span>
+              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.worry.text}"</p>
               <span class="text-xs text-stone-500 block text-right">— Player: ${data.worry.name}</span>
             </div>
 
-            <div class="p-4 bg-stone-900 border-2 border-stone-700 space-y-1">
-              <span class="text-xs text-sky-400 mc-font">🧪 TEACHER BUFF:</span>
-              <p class="text-slate-200 text-xl font-mono">"${data.tip.text}"</p>
+            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
+              <span class="text-[10px] sm:text-xs text-sky-400 mc-font">🧪 TEACHER BUFF:</span>
+              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.tip.text}"</p>
               <span class="text-xs text-stone-500 block text-right">— Player: ${data.tip.name}</span>
             </div>
           `;
@@ -301,7 +301,7 @@
           shuffleBtn.disabled = false;
           shuffleBtn.innerText = "🔄 RESHUFFLE";
           console.error("Error fetching spotlight data:", err);
-          container.innerHTML = '<p class="text-red-400 text-center text-xs mc-font">FAILED TO LOAD REFLECTIONS</p>';
+          container.innerHTML = '<p class="text-red-400 text-center text-[10px] sm:text-xs mc-font">FAILED TO LOAD REFLECTIONS</p>';
         });
     }
 
