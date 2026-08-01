@@ -26,12 +26,12 @@
     body {
       font-family: 'Pixelify Sans', cursive, sans-serif;
       font-size: 1.2rem;
-      background-color: #0d0f12;
+      background-color: #0a0b0e;
       overflow-x: hidden;
       color: #e2e8f0;
     }
 
-    /* Ambient Animated Grid Background */
+    /* Vibrant Minecraft Ambient Canvas */
     #bgCanvas {
       position: fixed;
       top: 0;
@@ -49,12 +49,12 @@
 
     /* Enhanced Minecraft Beveled Borders */
     .mc-box {
-      background-color: #262423;
+      background-color: rgba(38, 36, 35, 0.93);
       border: 4px solid #000;
       box-shadow: 
         inset 4px 4px 0px #3d3a37,
         inset -4px -4px 0px #171615,
-        0 10px 25px -5px rgba(0, 0, 0, 0.7);
+        0 10px 25px -5px rgba(0, 0, 0, 0.85);
       position: relative;
     }
 
@@ -72,7 +72,7 @@
       box-shadow: 
         inset -3px -3px 0px #121111,
         inset 3px 3px 0px #0a0909,
-        0 0 15px rgba(250, 204, 21, 0.6);
+        0 0 18px rgba(250, 204, 21, 0.85);
       border-color: #facc15;
     }
 
@@ -80,7 +80,7 @@
       box-shadow: 
         inset -3px -3px 0px #121111,
         inset 3px 3px 0px #0a0909,
-        0 0 15px rgba(16, 185, 129, 0.6);
+        0 0 18px rgba(16, 185, 129, 0.85);
       border-color: #10b981;
     }
 
@@ -88,7 +88,7 @@
       box-shadow: 
         inset -3px -3px 0px #121111,
         inset 3px 3px 0px #0a0909,
-        0 0 15px rgba(239, 68, 68, 0.6);
+        0 0 18px rgba(239, 68, 68, 0.85);
       border-color: #ef4444;
     }
 
@@ -96,7 +96,7 @@
       box-shadow: 
         inset -3px -3px 0px #121111,
         inset 3px 3px 0px #0a0909,
-        0 0 15px rgba(56, 189, 248, 0.6);
+        0 0 18px rgba(56, 189, 248, 0.85);
       border-color: #38bdf8;
     }
 
@@ -111,7 +111,7 @@
       text-shadow: 2px 2px 0px #000;
       transition: all 0.1s ease;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .mc-button:hover {
@@ -147,31 +147,89 @@
         0 6px 0px #000;
     }
 
-    /* Perimeter Running Laser Light Animation */
+    /* ========================================================
+       UPGRADED PLASMA / BURNING BEAM PERIMETER ANIMATION
+       ======================================================== */
     .perimeter-runner {
       position: absolute;
-      inset: 0;
+      inset: -4px;
       pointer-events: none;
       display: none;
+      overflow: visible;
     }
 
     .submitting .perimeter-runner {
       display: block;
     }
 
-    .perimeter-dot {
+    /* Outer SVG container overlaying the button perimeter */
+    .beam-svg {
+      width: 100%;
+      height: 100%;
       position: absolute;
-      width: 14px;
-      height: 14px;
-      background: #fde047;
-      box-shadow: 0 0 12px #fde047, 0 0 20px #f59e0b;
-      offset-path: rect(0% 100% 100% 0% round 0px);
-      animation: runPerimeter 1.2s linear infinite;
+      top: 0;
+      left: 0;
+      overflow: visible;
     }
 
-    @keyframes runPerimeter {
-      0% { offset-distance: 0%; }
-      100% { offset-distance: 100%; }
+    /* Long glowing plasma trail stroke */
+    .plasma-beam {
+      fill: none;
+      stroke: url(#plasmaGradient);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 120 400; /* Stretched long trail */
+      filter: drop-shadow(0 0 6px #ffe600) drop-shadow(0 0 12px #ff4500) drop-shadow(0 0 20px #ff0000);
+      animation: runBeam 1.1s linear infinite;
+    }
+
+    @keyframes runBeam {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      100% {
+        stroke-dashoffset: -520;
+      }
+    }
+
+    /* Floating fiery plasma specks/sparks along the edge */
+    .plasma-spark-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 1px;
+      box-shadow: 0 0 8px #fff066, 0 0 14px #ff5500;
+      offset-path: rect(0% 100% 100% 0% round 0px);
+      animation: runSpark 1.1s linear infinite;
+    }
+
+    .spark-1 { animation-delay: 0s; }
+    .spark-2 { animation-delay: -0.2s; }
+    .spark-3 { animation-delay: -0.4s; }
+    .spark-4 { animation-delay: -0.6s; }
+
+    @keyframes runSpark {
+      0% {
+        offset-distance: 0%;
+        opacity: 1;
+        transform: scale(1.4);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(0.8);
+      }
+      100% {
+        offset-distance: 100%;
+        opacity: 1;
+        transform: scale(1.4);
+      }
     }
 
     /* Text & Input Enhancements */
@@ -224,7 +282,7 @@
 </head>
 <body class="py-6 sm:py-10 px-3 sm:px-6">
 
-  <!-- Floating Pixel Background Canvas -->
+  <!-- Glowing Minecraft Particle Background Canvas -->
   <canvas id="bgCanvas"></canvas>
 
   <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8 relative z-10">
@@ -304,8 +362,28 @@
           <button type="submit" id="submitBtn" onclick="playClickSound()"
             class="w-full py-4 text-white font-bold text-[11px] sm:text-xs mc-button cursor-pointer leading-normal tracking-wider">
             <span>[ CRAFT & SUBMIT REFLECTION ]</span>
+            
+            <!-- Long Burning Plasma Beam Runner -->
             <div class="perimeter-runner">
-              <div class="perimeter-dot"></div>
+              <svg class="beam-svg">
+                <defs>
+                  <linearGradient id="plasmaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                    <stop offset="25%" stop-color="#fff066" stop-opacity="0.9" />
+                    <stop offset="65%" stop-color="#ff4500" stop-opacity="0.8" />
+                    <stop offset="100%" stop-color="#e60000" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <rect x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)" class="plasma-beam" rx="0"></rect>
+              </svg>
+
+              <!-- Floating Sparks / Plasma Specks -->
+              <div class="plasma-spark-container">
+                <div class="spark spark-1"></div>
+                <div class="spark spark-2"></div>
+                <div class="spark spark-3"></div>
+                <div class="spark spark-4"></div>
+              </div>
             </div>
           </button>
         </div>
@@ -349,7 +427,6 @@
       }
     }
 
-    // Short 8-Bit Click Sound
     function playClickSound() {
       initAudio();
       if (audioCtx.state === 'suspended') {
@@ -372,13 +449,12 @@
       osc.stop(audioCtx.currentTime + 0.08);
     }
 
-    // 8-Bit Level-Up Fanfare Chime Sound
     function playLevelUpSound() {
       initAudio();
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
-      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C-E-G-C-E-G
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
       notes.forEach((freq, i) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -432,34 +508,83 @@
       }, 500);
     }
 
-    // Ambient Particle Background Script
+    // --- High-Efficiency Minecraft Glow Particle Engine ---
     function initBackgroundCanvas() {
       const canvas = document.getElementById('bgCanvas');
       const ctx = canvas.getContext('2d');
       let width = canvas.width = window.innerWidth;
       let height = canvas.height = window.innerHeight;
 
-      const particles = Array.from({ length: 35 }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        size: Math.random() * 4 + 2,
-        speedY: -(Math.random() * 0.4 + 0.1),
-        opacity: Math.random() * 0.5 + 0.2,
-        color: ['#10b981', '#f59e0b', '#3b82f6'][Math.floor(Math.random() * 3)]
-      }));
+      // Authentic Minecraft Glow Colors (EXP Green, Redstone Amber, Diamond Aqua, Nether Purple)
+      const glowPalettes = [
+        { r: 74, g: 222, b: 128 },  // XP Emerald Green
+        { r: 251, g: 191, b: 36 },  // Redstone Gold
+        { r: 56, g: 189, b: 248 },  // Diamond Cyan
+        { r: 192, g: 132, b: 252 }  // Enchanting Purple
+      ];
+
+      // Maintain a performance budget (30 glowing particles max)
+      const PARTICLE_COUNT = 30;
+      const particles = Array.from({ length: PARTICLE_COUNT }, () => createParticle(true));
+
+      function createParticle(randomizeY = false) {
+        const color = glowPalettes[Math.floor(Math.random() * glowPalettes.length)];
+        return {
+          x: Math.random() * width,
+          y: randomizeY ? Math.random() * height : height + 20,
+          size: Math.random() * 4 + 3,       // Core pixel size
+          glowRadius: Math.random() * 18 + 12, // Radial glow radius
+          speedY: -(Math.random() * 0.6 + 0.25),
+          driftX: (Math.random() - 0.5) * 0.3,
+          color: color,
+          alpha: Math.random() * 0.6 + 0.3,
+          pulseSpeed: Math.random() * 0.03 + 0.01,
+          pulseAngle: Math.random() * Math.PI * 2
+        };
+      }
 
       function animate() {
         ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
+
+        // Blending mode for vibrant overlapping magic light glows
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          
           p.y += p.speedY;
-          if (p.y < -10) {
-            p.y = height + 10;
-            p.x = Math.random() * width;
+          p.x += p.driftX;
+          p.pulseAngle += p.pulseSpeed;
+
+          // Pulsing opacity
+          const currentAlpha = Math.max(0.15, Math.min(1, p.alpha + Math.sin(p.pulseAngle) * 0.25));
+
+          // Reset when out of screen bounds
+          if (p.y < -30 || p.x < -20 || p.x > width + 20) {
+            particles[i] = createParticle(false);
+            continue;
           }
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.opacity;
-          ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
-        });
+
+          const ix = Math.floor(p.x);
+          const iy = Math.floor(p.y);
+
+          // 1. Draw Radial Halo Glow
+          const gradient = ctx.createRadialGradient(ix, iy, 0, ix, iy, p.glowRadius);
+          gradient.addColorStop(0, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.8})`);
+          gradient.addColorStop(0.5, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${currentAlpha * 0.25})`);
+          gradient.addColorStop(1, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0)`);
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(ix, iy, p.glowRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 2. Draw Sharp Pixel Core (Minecraft EXP / Enchanting Speck)
+          ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
+          ctx.fillRect(ix - Math.floor(p.size / 2), iy - Math.floor(p.size / 2), p.size, p.size);
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
         requestAnimationFrame(animate);
       }
 
