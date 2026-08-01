@@ -23,7 +23,7 @@
       background-color: #1a1a1a;
       background-image: radial-gradient(#2d3748 1px, transparent 0);
       background-size: 16px 16px;
-      overflow-x: hidden; /* Prevents horizontal scrolling on small screens */
+      overflow-x: hidden;
     }
     
     @media (min-width: 640px) {
@@ -47,48 +47,44 @@
       box-shadow: inset -4px -4px 0px #1c1917, inset 4px 4px 0px #57534e;
     }
 
-    /* Redstone Animated Glowing Border */
-    @keyframes redstoneGlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* Lightweight GPU-Accelerated Redstone Pulse Border */
+    @keyframes redstonePulse {
+      0%, 100% { border-color: #ef4444; }
+      50% { border-color: #f59e0b; }
     }
 
     .glowing-border-active {
-      position: relative;
-      background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #ef4444);
-      background-size: 300% 300%;
-      animation: redstoneGlow 1.5s linear infinite;
-      padding: 4px;
+      animation: redstonePulse 0.6s infinite ease-in-out;
+      will-change: border-color;
     }
 
-    /* Floating Header Icon Animation */
+    /* Smooth Floating Icons (GPU accelerated) */
     @keyframes pixelFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(0, -5px, 0); }
     }
     .float-icon {
       display: inline-block;
-      animation: pixelFloat 2s ease-in-out infinite;
+      animation: pixelFloat 1.8s ease-in-out infinite;
+      will-change: transform;
     }
 
-    /* Pulse Glow Header Text Animation */
-    @keyframes titleGlow {
-      0%, 100% { text-shadow: 2px 2px 0px #000, 0 0 8px rgba(253, 224, 71, 0.3); }
-      50% { text-shadow: 2px 2px 0px #000, 0 0 18px rgba(253, 224, 71, 0.8); }
-    }
-    .animated-title {
-      animation: titleGlow 2.5s ease-in-out infinite;
-    }
-
-    /* Shuffle Loading Spinner */
-    @keyframes pixelSpin {
+    /* Fast 60fps Spinner */
+    @keyframes fastSpin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     .pixel-spinner {
       display: inline-block;
-      animation: pixelSpin 1s steps(8) infinite;
+      animation: fastSpin 1s linear infinite;
+      will-change: transform;
+    }
+
+    /* Dynamic Letter Span Styling */
+    .colored-letter {
+      display: inline-block;
+      text-shadow: 2px 2px 0px #000;
+      transition: color 0.3s ease;
     }
   </style>
 </head>
@@ -96,11 +92,13 @@
 
   <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
     
-    <!-- Animated Header Banner -->
+    <!-- Header Banner -->
     <header class="text-center space-y-3">
-      <div class="inline-block bg-emerald-700 mc-box border-b-6 sm:border-b-8 border-emerald-900 p-3 sm:p-4 rounded-none w-full">
-        <h1 class="text-sm sm:text-xl font-bold text-yellow-300 animated-title leading-relaxed">
-          <span class="float-icon">⛏️</span> CLASS REFLECTIONS <span class="float-icon" style="animation-delay: 0.5s;">💎</span>
+      <div class="inline-block bg-emerald-800 mc-box border-b-6 sm:border-b-8 border-emerald-950 p-3 sm:p-4 rounded-none w-full">
+        <h1 class="text-sm sm:text-xl font-bold leading-relaxed">
+          <span class="float-icon">⛏️</span> 
+          <span id="randomTitle">CLASS REFLECTIONS</span> 
+          <span class="float-icon" style="animation-delay: 0.5s;">💎</span>
         </h1>
         <p class="text-emerald-100 text-base sm:text-lg mt-1 sm:mt-2 font-mono">Build your quest goals & craft your school year!</p>
       </div>
@@ -143,7 +141,7 @@
         </div>
 
         <!-- Submit Button Container -->
-        <div id="btnWrapper" class="transition-all duration-200">
+        <div>
           <button type="submit" id="submitBtn" 
             class="w-full py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-[10px] sm:text-xs border-2 sm:border-4 border-black mc-button cursor-pointer transition leading-normal">
             [ CRAFT & SUBMIT REFLECTION ]
@@ -179,18 +177,44 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbztNuhGhOYB-9xb34sz3tT2kgZGj53bP3-ZT8bfCZzABfJAxJq9Bi4y3Lm4LlpDsIJT/exec";
     let statusTimeout;
 
+    // Vibrant Retro Palette for Title Randomization
+    const pixelColors = [
+      '#fde047', '#f43f5e', '#38bdf8', '#4ade80', 
+      '#fb923c', '#a855f7', '#f472b6', '#34d399'
+    ];
+
+    // Applies Random Color to Each Letter
+    function randomizeTitleColors() {
+      const titleEl = document.getElementById('randomTitle');
+      const text = titleEl.innerText;
+      titleEl.innerHTML = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === ' ') {
+          titleEl.appendChild(document.createTextNode(' '));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'colored-letter';
+          span.innerText = char;
+          const randomColor = pixelColors[Math.floor(Math.random() * pixelColors.length)];
+          span.style.color = randomColor;
+          titleEl.appendChild(span);
+        }
+      }
+    }
+
     function handleFormSubmit(event) {
       event.preventDefault();
       
       const btn = document.getElementById('submitBtn');
-      const btnWrapper = document.getElementById('btnWrapper');
       const statusMsg = document.getElementById('statusMessage');
       
       clearTimeout(statusTimeout);
 
       btn.disabled = true;
       btn.innerText = "[ CRAFTING RESPONSE... ]";
-      btnWrapper.classList.add('glowing-border-active');
+      btn.classList.add('glowing-border-active');
 
       const payload = {
         studentName: document.getElementById('studentName').value,
@@ -208,7 +232,7 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        btnWrapper.classList.remove('glowing-border-active');
+        btn.classList.remove('glowing-border-active');
         btn.disabled = false;
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         document.getElementById('checkinForm').reset();
@@ -228,7 +252,7 @@
       })
       .catch(err => {
         console.error(err);
-        btnWrapper.classList.remove('glowing-border-active');
+        btn.classList.remove('glowing-border-active');
         btn.disabled = false;
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         statusMsg.className = "mt-4 sm:mt-6 text-center text-[10px] sm:text-xs text-red-400 mc-font leading-relaxed opacity-100";
@@ -244,8 +268,8 @@
 
     function fireConfetti() {
       confetti({
-        particleCount: 70,
-        spread: 70,
+        particleCount: 60,
+        spread: 60,
         shapes: ['square'],
         colors: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'],
         origin: { y: 0.6 }
@@ -305,7 +329,10 @@
         });
     }
 
-    window.onload = loadSpotlight;
+    window.onload = function() {
+      randomizeTitleColors();
+      loadSpotlight();
+    };
   </script>
 </body>
 </html>
