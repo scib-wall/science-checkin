@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Class Reflections & Realm Quests</title>
   
-  <!-- Retro Pixel Fonts -->
+  <!-- Enhanced Retro Pixel Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,59 +17,143 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    body {
-      font-family: 'VT323', monospace;
-      font-size: 1.25rem;
-      background-color: #1a1a1a;
-      background-image: radial-gradient(#2d3748 1px, transparent 0);
-      background-size: 16px 16px;
-      overflow-x: hidden;
+    :root {
+      --mc-dark-border: #141414;
+      --mc-light-border: #4a4a4a;
+      --mc-gold: #fbc02d;
     }
-    
-    @media (min-width: 640px) {
-      body {
-        font-size: 1.35rem;
-      }
+
+    body {
+      font-family: 'Pixelify Sans', cursive, sans-serif;
+      font-size: 1.2rem;
+      background-color: #0d0f12;
+      overflow-x: hidden;
+      color: #e2e8f0;
+    }
+
+    /* Ambient Animated Grid Background */
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
     }
 
     h1, h2, label, button, .mc-font {
       font-family: 'Press Start 2P', cursive;
+      letter-spacing: 0.5px;
     }
 
-    /* Pixelated Sharp Borders */
-    .mc-button {
-      box-shadow: inset -3px -3px 0px 0px #1e293b, inset 3px 3px 0px 0px #94a3b8;
-      image-rendering: pixelated;
-    }
-
+    /* Enhanced Minecraft Beveled Borders */
     .mc-box {
+      background-color: #262423;
       border: 4px solid #000;
-      box-shadow: inset -4px -4px 0px #1c1917, inset 4px 4px 0px #57534e;
+      box-shadow: 
+        inset 4px 4px 0px #3d3a37,
+        inset -4px -4px 0px #171615,
+        0 10px 25px -5px rgba(0, 0, 0, 0.7);
+      position: relative;
     }
 
-    /* Lightweight GPU-Accelerated Redstone Pulse Border */
-    @keyframes redstonePulse {
-      0%, 100% { border-color: #ef4444; }
-      50% { border-color: #f59e0b; }
+    .mc-slot {
+      background-color: #121111;
+      border: 3px solid #000;
+      box-shadow: 
+        inset -3px -3px 0px #32302e,
+        inset 3px 3px 0px #0a0909;
     }
 
-    .glowing-border-active {
-      animation: redstonePulse 0.6s infinite ease-in-out;
-      will-change: border-color;
+    /* Action Buttons */
+    .mc-button {
+      background-color: #059669;
+      border: 3px solid #000;
+      box-shadow: 
+        inset -3px -3px 0px #047857,
+        inset 3px 3px 0px #34d399,
+        0 4px 0px #000;
+      text-shadow: 2px 2px 0px #000;
+      transition: all 0.1s ease;
     }
 
-    /* Smooth Floating Icons (GPU accelerated) */
+    .mc-button:hover {
+      background-color: #10b981;
+      transform: translateY(-2px);
+      box-shadow: 
+        inset -3px -3px 0px #059669,
+        inset 3px 3px 0px #6ee7b7,
+        0 6px 0px #000;
+    }
+
+    .mc-button:active {
+      transform: translateY(2px);
+      box-shadow: 
+        inset 3px 3px 0px #047857,
+        inset -3px -3px 0px #34d399,
+        0 2px 0px #000;
+    }
+
+    .mc-button-secondary {
+      background-color: #475569;
+      box-shadow: 
+        inset -3px -3px 0px #334155,
+        inset 3px 3px 0px #94a3b8,
+        0 4px 0px #000;
+    }
+    
+    .mc-button-secondary:hover {
+      background-color: #64748b;
+      box-shadow: 
+        inset -3px -3px 0px #475569,
+        inset 3px 3px 0px #cbd5e1,
+        0 6px 0px #000;
+    }
+
+    /* Text & Input Enhancements */
+    input, textarea {
+      font-family: 'Pixelify Sans', sans-serif !important;
+      font-size: 1.25rem !important;
+      color: #f8fafc !important;
+      text-shadow: 1px 1px 0px #000;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      box-shadow: 
+        inset -3px -3px 0px #1e293b,
+        inset 3px 3px 0px #0f172a,
+        0 0 12px rgba(16, 185, 129, 0.4);
+      border-color: #10b981 !important;
+    }
+
+    .pixel-text-shadow {
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    .glow-gold {
+      text-shadow: 0 0 8px rgba(251, 192, 45, 0.6), 2px 2px 0px #000;
+    }
+
+    /* Dynamic Color Loop Span */
+    .colored-letter {
+      display: inline-block;
+      text-shadow: 3px 3px 0px #000;
+      transition: color 0.25s ease-in-out;
+      will-change: color;
+    }
+
+    /* Animations */
     @keyframes pixelFloat {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      50% { transform: translate3d(0, -5px, 0); }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
     .float-icon {
       display: inline-block;
-      animation: pixelFloat 1.8s ease-in-out infinite;
-      will-change: transform;
+      animation: pixelFloat 2s ease-in-out infinite;
     }
 
-    /* Fast 60fps Spinner */
     @keyframes fastSpin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -77,98 +161,118 @@
     .pixel-spinner {
       display: inline-block;
       animation: fastSpin 1s linear infinite;
-      will-change: transform;
     }
 
-    /* Dynamic Letter Span Styling with Smooth Color Transitions */
-    .colored-letter {
-      display: inline-block;
-      text-shadow: 2px 2px 0px #000;
-      transition: color 0.25s linear;
-      will-change: color;
+    @keyframes redstonePulse {
+      0%, 100% { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+      50% { border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.7); }
+    }
+    .glowing-border-active {
+      animation: redstonePulse 0.6s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen py-4 sm:py-8 px-3 sm:px-6">
+<body class="py-6 sm:py-10 px-3 sm:px-6">
 
-  <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
+  <!-- Floating Pixel Background Canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8 relative z-10">
     
-    <!-- Header Banner -->
-    <header class="text-center space-y-3">
-      <div class="inline-block bg-emerald-800 mc-box border-b-6 sm:border-b-8 border-emerald-950 p-3 sm:p-4 rounded-none w-full">
-        <h1 class="text-sm sm:text-xl font-bold leading-relaxed">
+    <!-- Banner Header -->
+    <header class="text-center">
+      <div class="bg-gradient-to-b from-emerald-800 to-emerald-950 mc-box p-4 sm:p-6 rounded-none w-full border-b-8">
+        <h1 class="text-base sm:text-2xl font-bold leading-relaxed tracking-wider">
           <span class="float-icon">⛏️</span> 
           <span id="randomTitle">CLASS REFLECTIONS</span> 
           <span class="float-icon" style="animation-delay: 0.5s;">💎</span>
         </h1>
-        <p class="text-emerald-100 text-base sm:text-lg mt-1 sm:mt-2 font-mono">Build your quest goals & craft your school year!</p>
+        <p class="text-emerald-200 text-lg sm:text-xl mt-2 font-semibold tracking-wide pixel-text-shadow">
+          Build your quest goals & craft your school year!
+        </p>
       </div>
     </header>
 
     <!-- Main Reflection Form -->
-    <main class="bg-stone-800 mc-box p-4 sm:p-8 shadow-2xl">
-      <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-5 sm:space-y-6">
+    <main class="mc-box p-5 sm:p-8 shadow-2xl">
+      <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
         
         <!-- Gamertag / Name -->
-        <div>
-          <label class="block text-[10px] sm:text-xs text-yellow-400 mb-2 leading-relaxed">🏷️ GAMERTAG / NAME:</label>
-          <input type="text" id="studentName" required 
-            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-green-400 focus:outline-none focus:border-emerald-500 font-mono text-lg sm:text-xl"
-            placeholder="Steve_99 or Alex">
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs text-yellow-400 leading-relaxed glow-gold">
+            🏷️ GAMERTAG / NAME:
+          </label>
+          <div class="mc-slot p-1">
+            <input type="text" id="studentName" required 
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-emerald-400 focus:outline-none"
+              placeholder="e.g., Steve_99 or Alex">
+          </div>
         </div>
 
         <!-- Quest Goal -->
-        <div>
-          <label class="block text-[10px] sm:text-xs text-emerald-400 mb-2 leading-relaxed">💎 1. MAIN QUEST: WHAT IS ONE BIG GOAL YOU WANT TO ACHIEVE THIS YEAR?</label>
-          <textarea id="goal" rows="3" required 
-            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-emerald-500 font-mono text-lg sm:text-xl"
-            placeholder="My main quest is to..."></textarea>
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs text-emerald-400 leading-relaxed pixel-text-shadow">
+            💎 1. MAIN QUEST: WHAT IS ONE BIG GOAL YOU WANT TO ACHIEVE THIS YEAR?
+          </label>
+          <div class="mc-slot p-1">
+            <textarea id="goal" rows="3" required 
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              placeholder="My main quest is to..."></textarea>
+          </div>
         </div>
 
         <!-- Worry / Hazard -->
-        <div>
-          <label class="block text-[10px] sm:text-xs text-red-400 mb-2 leading-relaxed">💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?</label>
-          <textarea id="worry" rows="3" required 
-            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-red-500 font-mono text-lg sm:text-xl"
-            placeholder="I'm worried about..."></textarea>
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs text-red-400 leading-relaxed pixel-text-shadow">
+            💥 2. HAZARD WARNING: WHAT IS ONE THING WEIGHING ON YOUR MIND?
+          </label>
+          <div class="mc-slot p-1">
+            <textarea id="worry" rows="3" required 
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              placeholder="I'm worried about..."></textarea>
+          </div>
         </div>
 
         <!-- Teacher Advice / Buff -->
-        <div>
-          <label class="block text-[10px] sm:text-xs text-sky-400 mb-2 leading-relaxed">🧪 3. TEACHER BUFFS: WHAT CAN TEACHERS DO TO HELP YOU CRAFT SUCCESS?</label>
-          <textarea id="teacherTip" rows="3" required 
-            class="w-full px-3 py-2 bg-stone-900 border-2 sm:border-4 border-stone-600 text-slate-100 focus:outline-none focus:border-sky-500 font-mono text-lg sm:text-xl"
-            placeholder="Teachers can help by..."></textarea>
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs text-sky-400 leading-relaxed pixel-text-shadow">
+            🧪 3. TEACHER BUFFS: WHAT CAN TEACHERS DO TO HELP YOU CRAFT SUCCESS?
+          </label>
+          <div class="mc-slot p-1">
+            <textarea id="teacherTip" rows="3" required 
+              class="w-full px-3 py-2 bg-stone-900 border-2 border-stone-700 text-slate-100 focus:outline-none"
+              placeholder="Teachers can help by..."></textarea>
+          </div>
         </div>
 
-        <!-- Submit Button Container -->
-        <div>
+        <!-- Submit Button -->
+        <div class="pt-2">
           <button type="submit" id="submitBtn" 
-            class="w-full py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-[10px] sm:text-xs border-2 sm:border-4 border-black mc-button cursor-pointer transition leading-normal">
+            class="w-full py-4 text-white font-bold text-[11px] sm:text-xs mc-button cursor-pointer leading-normal tracking-wider">
             [ CRAFT & SUBMIT REFLECTION ]
           </button>
         </div>
       </form>
       
       <!-- Auto-fading Status Message -->
-      <div id="statusMessage" class="hidden mt-4 sm:mt-6 text-center text-[10px] sm:text-xs mc-font transition-opacity duration-500"></div>
+      <div id="statusMessage" class="hidden mt-6 text-center text-xs mc-font transition-opacity duration-500 glow-gold"></div>
     </main>
 
     <!-- Community Billboard / Spotlight -->
-    <section class="bg-stone-800 mc-box p-4 sm:p-8 space-y-4 sm:space-y-6">
-      <div class="flex flex-col sm:flex-row items-center justify-between border-b-2 sm:border-b-4 border-stone-700 pb-3 sm:pb-4 gap-3">
+    <section class="mc-box p-5 sm:p-8 space-y-5">
+      <div class="flex flex-col sm:flex-row items-center justify-between border-b-4 border-stone-700 pb-4 gap-4">
         <div class="text-center sm:text-left">
-          <h2 class="text-xs sm:text-base font-bold text-yellow-400">📜 REALM BULLETIN</h2>
-          <p class="text-slate-400 text-xs sm:text-sm">Insights shared by fellow players!</p>
+          <h2 class="text-xs sm:text-base font-bold text-yellow-400 glow-gold">📜 REALM BULLETIN</h2>
+          <p class="text-stone-300 text-sm sm:text-base mt-1 font-semibold">Insights shared by fellow players!</p>
         </div>
         <button id="shuffleBtn" onclick="loadSpotlight()" 
-          class="w-full sm:w-auto px-4 py-2 bg-stone-700 hover:bg-stone-600 text-[10px] sm:text-xs text-yellow-300 border-2 border-black mc-button mc-font transition">
+          class="w-full sm:w-auto px-5 py-2.5 text-[10px] sm:text-xs text-yellow-300 mc-button mc-button-secondary mc-font">
           🔄 RESHUFFLE
         </button>
       </div>
 
-      <div id="spotlightContainer" class="space-y-3 sm:space-y-4">
-        <p class="text-slate-400 text-center italic">Craft your entry above to display on the board!</p>
+      <div id="spotlightContainer" class="space-y-4">
+        <p class="text-stone-400 text-center italic">Craft your entry above to display on the board!</p>
       </div>
     </section>
 
@@ -178,13 +282,12 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbztNuhGhOYB-9xb34sz3tT2kgZGj53bP3-ZT8bfCZzABfJAxJq9Bi4y3Lm4LlpDsIJT/exec";
     let statusTimeout;
 
-    // Vibrant Retro Palette for Title Randomization
+    // Palette for Title Dynamic Animation
     const pixelColors = [
       '#fde047', '#f43f5e', '#38bdf8', '#4ade80', 
       '#fb923c', '#a855f7', '#f472b6', '#34d399'
     ];
 
-    // Initial setup: convert text into individual span tags
     function initializeTitleSpans() {
       const titleEl = document.getElementById('randomTitle');
       const text = titleEl.innerText;
@@ -204,7 +307,6 @@
       }
     }
 
-    // Updates letter colors every 0.5s smoothly
     function startTitleColorLoop() {
       setInterval(() => {
         const spans = document.querySelectorAll('#randomTitle .colored-letter');
@@ -212,7 +314,46 @@
           const randomColor = pixelColors[Math.floor(Math.random() * pixelColors.length)];
           span.style.color = randomColor;
         });
-      }, 500); // 500ms = 0.5 seconds
+      }, 500);
+    }
+
+    // Ambient Particle Background Script
+    function initBackgroundCanvas() {
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const particles = Array.from({ length: 35 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 4 + 2,
+        speedY: -(Math.random() * 0.4 + 0.1),
+        opacity: Math.random() * 0.5 + 0.2,
+        color: ['#10b981', '#f59e0b', '#3b82f6'][Math.floor(Math.random() * 3)]
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.y += p.speedY;
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.opacity;
+          ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+        });
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      animate();
     }
 
     function handleFormSubmit(event) {
@@ -237,9 +378,7 @@
       fetch(API_URL, {
         method: "POST",
         mode: "no-cors", 
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       })
       .then(() => {
@@ -248,12 +387,11 @@
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
         document.getElementById('checkinForm').reset();
         
-        statusMsg.className = "mt-4 sm:mt-6 text-center text-[10px] sm:text-xs text-emerald-400 mc-font leading-relaxed opacity-100";
+        statusMsg.className = "mt-6 text-center text-xs text-emerald-400 mc-font leading-relaxed opacity-100 glow-gold";
         statusMsg.innerText = "🎉 ADVANCEMENT MADE! REFLECTION CRAFTED!";
         statusMsg.classList.remove('hidden');
 
         fireConfetti();
-
         setTimeout(loadSpotlight, 1200);
 
         statusTimeout = setTimeout(() => {
@@ -266,7 +404,7 @@
         btn.classList.remove('glowing-border-active');
         btn.disabled = false;
         btn.innerText = "[ CRAFT & SUBMIT REFLECTION ]";
-        statusMsg.className = "mt-4 sm:mt-6 text-center text-[10px] sm:text-xs text-red-400 mc-font leading-relaxed opacity-100";
+        statusMsg.className = "mt-6 text-center text-xs text-red-400 mc-font leading-relaxed opacity-100";
         statusMsg.innerText = "❌ CRAFTING FAILED! TRY AGAIN!";
         statusMsg.classList.remove('hidden');
 
@@ -279,8 +417,8 @@
 
     function fireConfetti() {
       confetti({
-        particleCount: 60,
-        spread: 60,
+        particleCount: 70,
+        spread: 70,
         shapes: ['square'],
         colors: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'],
         origin: { y: 0.6 }
@@ -295,9 +433,9 @@
       shuffleBtn.innerText = "⏳ SHUFFLING...";
       
       container.innerHTML = `
-        <div class="py-6 text-center space-y-2">
-          <div class="text-2xl sm:text-3xl pixel-spinner">⚙️</div>
-          <p class="text-[10px] sm:text-xs text-yellow-300 mc-font">SHUFFLING THOUGHTS...</p>
+        <div class="py-8 text-center space-y-3">
+          <div class="text-3xl pixel-spinner">⚙️</div>
+          <p class="text-xs text-yellow-300 mc-font glow-gold">SHUFFLING THOUGHTS...</p>
         </div>
       `;
       
@@ -308,27 +446,27 @@
           shuffleBtn.innerText = "🔄 RESHUFFLE";
 
           if (!data) {
-            container.innerHTML = '<p class="text-slate-400 text-center">No player notes found yet!</p>';
+            container.innerHTML = '<p class="text-stone-400 text-center">No player notes found yet!</p>';
             return;
           }
 
           container.innerHTML = `
-            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
-              <span class="text-[10px] sm:text-xs text-emerald-400 mc-font">💎 MAIN QUEST:</span>
-              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.goal.text}"</p>
-              <span class="text-xs text-stone-500 block text-right">— Player: ${data.goal.name}</span>
+            <div class="mc-slot p-4 space-y-2 border-l-4 border-l-emerald-500">
+              <span class="text-xs text-emerald-400 mc-font pixel-text-shadow">💎 MAIN QUEST:</span>
+              <p class="text-slate-100 text-lg sm:text-xl leading-relaxed">"${data.goal.text}"</p>
+              <span class="text-sm text-stone-400 block text-right font-semibold">— Player: ${data.goal.name}</span>
             </div>
 
-            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
-              <span class="text-[10px] sm:text-xs text-red-400 mc-font">💥 HAZARD WARNING:</span>
-              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.worry.text}"</p>
-              <span class="text-xs text-stone-500 block text-right">— Player: ${data.worry.name}</span>
+            <div class="mc-slot p-4 space-y-2 border-l-4 border-l-red-500">
+              <span class="text-xs text-red-400 mc-font pixel-text-shadow">💥 HAZARD WARNING:</span>
+              <p class="text-slate-100 text-lg sm:text-xl leading-relaxed">"${data.worry.text}"</p>
+              <span class="text-sm text-stone-400 block text-right font-semibold">— Player: ${data.worry.name}</span>
             </div>
 
-            <div class="p-3 sm:p-4 bg-stone-900 border-2 border-stone-700 space-y-1 break-words">
-              <span class="text-[10px] sm:text-xs text-sky-400 mc-font">🧪 TEACHER BUFF:</span>
-              <p class="text-slate-200 text-lg sm:text-xl font-mono">"${data.tip.text}"</p>
-              <span class="text-xs text-stone-500 block text-right">— Player: ${data.tip.name}</span>
+            <div class="mc-slot p-4 space-y-2 border-l-4 border-l-sky-500">
+              <span class="text-xs text-sky-400 mc-font pixel-text-shadow">🧪 TEACHER BUFF:</span>
+              <p class="text-slate-100 text-lg sm:text-xl leading-relaxed">"${data.tip.text}"</p>
+              <span class="text-sm text-stone-400 block text-right font-semibold">— Player: ${data.tip.name}</span>
             </div>
           `;
         })
@@ -336,13 +474,14 @@
           shuffleBtn.disabled = false;
           shuffleBtn.innerText = "🔄 RESHUFFLE";
           console.error("Error fetching spotlight data:", err);
-          container.innerHTML = '<p class="text-red-400 text-center text-[10px] sm:text-xs mc-font">FAILED TO LOAD REFLECTIONS</p>';
+          container.innerHTML = '<p class="text-red-400 text-center text-xs mc-font">FAILED TO LOAD REFLECTIONS</p>';
         });
     }
 
     window.onload = function() {
       initializeTitleSpans();
       startTitleColorLoop();
+      initBackgroundCanvas();
       loadSpotlight();
     };
   </script>
